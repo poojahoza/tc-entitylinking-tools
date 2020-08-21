@@ -30,7 +30,7 @@ public class DBpediaELIndexRunner implements ProgramRunner{
         DBpediaIndexBuilder dBpediaIndexBuilder;
 
         try {
-            dBpediaIndexBuilder = new DBpediaIndexBuilder(dBpediaELParser.getIndexPath(), destFinalPath);
+            dBpediaIndexBuilder = new DBpediaIndexBuilder(destFinalPath, dBpediaELParser.getIndexPath());
             dBpediaIndexBuilder.createDBpediaIndex();
         }catch (IOException ioe){
             ioe.printStackTrace();
