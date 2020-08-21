@@ -30,6 +30,7 @@ public class DBpediaIndexBuilder {
         cborLoc=cborFileLoc;
         SimpleHttpConnectionManager connManager=new SimpleHttpConnectionManager(true);
         client=new HttpClient(connManager);
+        dBpediaEntityLinker = new DBpediaEntityLinker();
     }
 
     private void parseParagraphs(){
@@ -48,11 +49,12 @@ public class DBpediaIndexBuilder {
             contentType.setStoreTermVectors(true);
 
             String paraText = para.getTextOnly();
+            String paraEntities = dBpediaEntityLinker.getEntities(paraText,client);
 
             //Then we add the paragraph id and the paragraph body for searching
             document.add(new StringField("Id", para.getParaId(), Field.Store.YES));
             document.add(new Field("Text", paraText, contentType));
-            document.add(new StringField("EntityLinks", dBpediaEntityLinker.getEntities(paraText,client), Field.Store.YES));
+            document.add(new StringField("EntityLinks", paraEntities, Field.Store.YES));
 
             try {
                 indexWriter.addDocument(document);
