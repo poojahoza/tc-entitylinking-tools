@@ -34,6 +34,7 @@ public class DBpediaIndexBuilder {
     }
 
     private void parseParagraphs(){
+
         Iterable<Data.Paragraph> paragraphIterable = IndexUtils.createParagraphIterator(cborLoc);
 
         try
@@ -66,6 +67,7 @@ public class DBpediaIndexBuilder {
                 {
                     indexWriter.commit();
                 }
+                System.out.println(increment);
             }catch(IOException ioe) {
                 System.out.println(ioe.getMessage());
             }

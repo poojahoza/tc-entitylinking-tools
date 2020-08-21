@@ -47,7 +47,7 @@ public class DBpediaEntityLinker {
             /*getMethod = new GetMethod(API_URL + "rest/annotate/?" +
                     "text=" + URLEncoder.encode(input_text, "utf-8"));
             getMethod.addRequestHeader(new Header("Accept", "application/json"));*/
-            System.out.println(getMethod.getURI());
+            //System.out.println(getMethod.getURI());
 
             httpClient.executeMethod(getMethod);
             //client.executeMethod(getMethod);
@@ -55,7 +55,7 @@ public class DBpediaEntityLinker {
             dbpedia_response = getMethod.getResponseBodyAsString();
             JSONParser jsonParser = new JSONParser();
             JSONObject jsonObject = (JSONObject) jsonParser.parse(dbpedia_response);
-            System.out.println("***********************");
+            //System.out.println("***********************");
 
             if(jsonObject.containsKey("Resources")){
 
@@ -63,9 +63,12 @@ public class DBpediaEntityLinker {
                 for(int j = 0; j < jsonArray.size(); j++){
                     JSONObject resource = (JSONObject) jsonArray.get(j);
 
-                    entities_list += (String)resource.get("@surfaceForm")+"\t"+(String)resource.get("@offset")+"\t"+String.valueOf(Integer.valueOf((String)resource.get("@offset"))+((String) resource.get("@surfaceForm")).length())+"\t"+resource.get("@URI").toString().substring(resource.get("@URI").toString().lastIndexOf("/"));
-                    entities_list += "\n";
-                    System.out.println(entities_list);
+                    double simScore = Double.parseDouble((String)resource.get("@similarityScore"));
+                    if(simScore >= 0.1) {
+                        entities_list += (String) resource.get("@surfaceForm") + "\t" + (String) resource.get("@offset") + "\t" + String.valueOf(Integer.valueOf((String) resource.get("@offset")) + ((String) resource.get("@surfaceForm")).length()) + "\t" + (String) resource.get("@similarityScore") + "\t" + resource.get("@URI").toString().substring(resource.get("@URI").toString().lastIndexOf("/") + 1).replace('_', ' ');
+                        entities_list += "\n";
+                    }
+                    //System.out.println(entities_list);
                 }
             }
             //getMethod.releaseConnection();
@@ -77,7 +80,7 @@ public class DBpediaEntityLinker {
             getMethod.releaseConnection();
             //((SimpleHttpConnectionManager)client.getHttpConnectionManager()).shutdown();
         }
-        System.out.println(entities_list);
+        //System.out.println(entities_list);
         return entities_list;
     }
 
